@@ -1,0 +1,195 @@
+"""
+Translations for console messages
+"""
+
+TRANSLATIONS = {
+    "ru": {
+        # Main messages
+        "python_check": "[1/3] Проверка системы на наличие python версии 3.7+...",
+        "python_required": "Требуется Python 3.7 или выше!",
+        "download_new_version": "Скачайте новую версию:",
+        "checking_dependencies": "[2/3] Проверка зависимостей...",
+        "checking_python_dependencies": "[2/3] Проверка зависимостей для python...",
+        "checking_files": "[3/3] Проверка наличия settings.json....",
+        "creating_file": "Создание settings.json...",
+        "file_created": "✓ settings.json создан",
+        "file_not_found": "Файл settings.json не найден, используются настройки по умолчанию",
+        "loading_error": "Ошибка загрузки settings.json:",
+        "launching_exe": "Запуск EXE версии...",
+        "deps_not_found_exe": "не найден!",
+        "exe_error": "Эта ошибка возникает в EXE версии.",
+        "rebuild_exe": "Пересоберите EXE с правильными зависимостями.",
+        "deps_not_installed": "не установлен",
+        "install_command": "Установите: python -m pip install",
+        "press_enter": "Нажмите Enter для выхода...",
+        "program_started": "программа запущена",
+        "program_will_try": "Программа будет пытаться подключиться к War Thunder 16 раз с задержкой 10 секунд между попытками. Если игра не запущена - программа завершится.",
+        "check_files_location": "Убедитесь, что все необходимые файлы находятся в правильных директориях.",
+        
+        # Settings translations
+        "settings_language": "Язык",
+        "settings_refresh": "Обновление",
+        "settings_vehicle_details": "Отображение техники",
+        "settings_large_img": "Большое изображение",
+        "settings_alt_presence": "Альтернативный статус",
+        "settings_tanks_main": "Танки (основной статус)",
+        "settings_tanks_img": "Танки (текст изображения)",
+        "settings_air_main": "Самолеты (основной статус)",
+        "settings_air_img": "Самолеты (текст изображения)",
+        "seconds": "секунд",
+        "every": "каждые",
+        "on": "ВКЛ",
+        "off": "ВЫКЛ",
+        "left": "Левый",
+        "right": "Правый",
+        "disabled": "Выкл",
+        
+        # Discord messages
+        "discord_connecting": "Подключение попытка #",
+        "discord_connected": "Успешно подключено",
+        "discord_not_found": "Discord не найден",
+        "discord_waiting": "ожидание",
+        "discord_seconds": "секунд...",
+        "discord_invalid_id": "Неверный ID приложения",
+        "discord_image_problem": "Проблема с изображением, пробуем другой вариант...",
+        "discord_alt_success": "Подключение успешно с альтернативным изображением",
+        "discord_retry_failed": "Повторная попытка не удалась",
+        "discord_connection_error": "Ошибка подключения",
+        "discord_failed_attempts": "Не удалось подключиться к Discord после",
+        "discord_attempts": "попыток",
+        "discord_status_updated": "Статус обновлен",
+        "discord_reconnection": "Повторное подключение успешно",
+        "app_id": "ID приложения",
+        
+        # API messages
+        "api_unavailable": "War Thunder API недоступен",
+        "attempt": "Попытка",
+        "waiting": "ожидание",
+        "max_attempts": "Максимальное количество попыток подключения к War Thunder достигнуто",
+        "wt_not_running": "War Thunder не запущен или нет подключения к War Thunder API",
+        "connection_error": "Ошибка подключения",
+        "starting_update_loop": "Начало цикла обновления статуса (интервал: {interval}s)",
+        "attempt_waiting": "Попытка #{attempt}: ожидание {seconds} секунд...",
+        "max_attempts_reached": "Достигнуто максимальное количество попыток подключения к War Thunder",
+        
+        # Handler debug messages
+        "debug_handler_settings": "Настройки для воздушной техники:",
+        "debug_left_air_state": "left_air_state =",
+        "debug_right_air_state": "right_air_state =",
+        "debug_lang": "lang =",
+        "debug_vehicle_details": "vehicle_details =",
+        "debug_alt_presence": "alt_presence =",
+        "debug_api_length": "Длина ответа API:",
+        "debug_characters": "символов",
+        "error_api_data": "Не удалось получить данные от API WT",
+        "error_api_empty": "Пустое тело ответа от API WT",
+        "warning_air_info": "Не удалось разобрать информацию о воздушной технике",
+        "debug_air_battle": "Настройка статуса для воздушного боя:",
+        "debug_state": "State:",
+        "debug_details": "Details:",
+        "error_air_status": "Ошибка при установке статуса воздушной техники:",
+        "setting_ground_battle": "Настройка статуса для наземного боя",
+        "error_ground_status": "Ошибка при установке статуса наземной техники:",
+        
+        # Logger messages
+        "logger_initialized": "Логгер инициализирован",
+    },
+    "en": {
+        # Main messages
+        "python_check": "[1/3] Checking system for Python version 3.7+...",
+        "python_required": "Python 3.7 or higher is required!",
+        "download_new_version": "Download new version:",
+        "checking_dependencies": "[2/3] Checking dependencies...",
+        "checking_python_dependencies": "[2/3] Checking dependencies for python...",
+        "checking_files": "[3/3] Checking for settings.json....",
+        "creating_file": "Creating settings.json...",
+        "file_created": "✓ settings.json created",
+        "file_not_found": "settings.json file not found, using default settings",
+        "loading_error": "Error loading settings.json:",
+        "launching_exe": "Launching EXE version...",
+        "deps_not_found_exe": "not found!",
+        "exe_error": "This error occurs in EXE version.",
+        "rebuild_exe": "Rebuild EXE with correct dependencies.",
+        "deps_not_installed": "not installed",
+        "install_command": "Install: python -m pip install",
+        "press_enter": "Press Enter to exit...",
+        "program_started": "program started",
+        "program_will_try": "The program will try to connect to War Thunder 16 times with 10 seconds delay between attempts. If the game is not running - the program will exit.",
+        "check_files_location": "Make sure all required files are in the correct directories.",
+        
+        # Settings translations
+        "settings_language": "Language",
+        "settings_refresh": "Update",
+        "settings_vehicle_details": "Vehicle display",
+        "settings_large_img": "Large image",
+        "settings_alt_presence": "Alternative status",
+        "settings_tanks_main": "Tanks (main status)",
+        "settings_tanks_img": "Tanks (image text)",
+        "settings_air_main": "Aircraft (main status)",
+        "settings_air_img": "Aircraft (image text)",
+        "seconds": "seconds",
+        "every": "every",
+        "on": "ON",
+        "off": "OFF",
+        "left": "Left",
+        "right": "Right",
+        "disabled": "Disabled",
+        
+        # Discord messages
+        "discord_connecting": "Connecting attempt #",
+        "discord_connected": "Successfully connected",
+        "discord_not_found": "Discord not found",
+        "discord_waiting": "waiting",
+        "discord_seconds": "seconds...",
+        "discord_invalid_id": "Invalid application ID",
+        "discord_image_problem": "Image problem, trying another option...",
+        "discord_alt_success": "Connection successful with alternative image",
+        "discord_retry_failed": "Retry attempt failed",
+        "discord_connection_error": "Connection error",
+        "discord_failed_attempts": "Failed to connect to Discord after",
+        "discord_attempts": "attempts",
+        "discord_status_updated": "Status updated",
+        "discord_reconnection": "Reconnection successful",
+        "app_id": "Application ID",
+        
+        # API messages
+        "api_unavailable": "War Thunder API unavailable",
+        "attempt": "Attempt",
+        "waiting": "waiting",
+        "max_attempts": "Max connection attempts to War Thunder reached",
+        "wt_not_running": "War Thunder not running or no connection to War Thunder API",
+        "connection_error": "Connection error",
+        "starting_update_loop": "Starting status update loop (interval: {interval}s)",
+        "attempt_waiting": "Attempt #{attempt}: waiting {seconds} seconds...",
+        "max_attempts_reached": "Max connection attempts to War Thunder reached",
+        
+        # Handler debug messages
+        "debug_handler_settings": "Settings for air vehicles:",
+        "debug_left_air_state": "left_air_state =",
+        "debug_right_air_state": "right_air_state =",
+        "debug_lang": "lang =",
+        "debug_vehicle_details": "vehicle_details =",
+        "debug_alt_presence": "alt_presence =",
+        "debug_api_length": "API response length:",
+        "debug_characters": "characters",
+        "error_api_data": "Failed to get data from WT API",
+        "error_api_empty": "Empty response body from WT API",
+        "warning_air_info": "Failed to parse air vehicle information",
+        "debug_air_battle": "Setting status for air battle:",
+        "debug_state": "State:",
+        "debug_details": "Details:",
+        "error_air_status": "Error setting air vehicle status:",
+        "setting_ground_battle": "Setting status for ground battle",
+        "error_ground_status": "Error setting ground vehicle status:",
+        
+        # Logger messages
+        "logger_initialized": "Logger initialized",
+    }
+}
+
+def get_translation(lang: str, key: str) -> str:
+    """Get translation for specific language"""
+    if lang in TRANSLATIONS and key in TRANSLATIONS[lang]:
+        return TRANSLATIONS[lang][key]
+    # Fallback to English
+    return TRANSLATIONS["en"].get(key, key)
