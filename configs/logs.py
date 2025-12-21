@@ -76,8 +76,16 @@ def init_logger():
         # Получаем язык из настроек
         lang = "en"  # значение по умолчанию
         try:
-            if os.path.exists("settings.json"):
-                with open("settings.json", "r", encoding="utf-8") as f:
+            # Определяем правильный путь к settings.json
+            if getattr(sys, 'frozen', False):
+                base_path = os.path.dirname(sys.executable)
+            else:
+                base_path = os.path.dirname(os.path.abspath(__file__))
+                base_path = os.path.dirname(base_path)  # Поднимаемся на уровень выше
+            
+            settings_path = os.path.join(base_path, "settings.json")
+            if os.path.exists(settings_path):
+                with open(settings_path, "r", encoding="utf-8") as f:
                     settings_data = json.load(f)
                     lang = settings_data.get("lang", "en")
         except:

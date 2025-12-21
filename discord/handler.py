@@ -42,10 +42,10 @@ def set_presence(state: str, details: str, large_img: str, large_text: str,
         if not large_text:
             large_text = "War Thunder"
         
-        # Если details пустой, не отправляем его в Discord
-        rpc.update(
+        # Используем новый метод set_activity
+        rpc.set_activity(
             state=state,
-            details=details if details else None,  # None если пустая строка
+            details=details if details else None,
             large_image=large_img,
             large_text=large_text,
             small_image=small_img if small_img else None,

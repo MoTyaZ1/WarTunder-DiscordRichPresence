@@ -23,13 +23,6 @@ class PresenceSettings:
     right_air_state: str
     debug_mode: bool = False
 
-def get_base_path():
-    """Get base path for both script and EXE"""
-    if getattr(sys, 'frozen', False):
-        return os.path.dirname(sys.executable)
-    else:
-        return os.path.dirname(os.path.abspath(__file__))
-
 def get_default_settings() -> PresenceSettings:
     """Get default settings"""
     return PresenceSettings(
@@ -45,11 +38,23 @@ def get_default_settings() -> PresenceSettings:
         debug_mode=False
     )
 
-def init_presence_settings() -> PresenceSettings:
+def init_presence_settings(base_path: str = None) -> PresenceSettings:
     """Initialize presence settings"""
     try:
-        base_path = get_base_path()
+        if base_path is None:
+            # Определяем базовый путь
+            if getattr(sys, 'frozen', False):
+                base_path = os.path.dirname(sys.executable)
+            else:
+                base_path = os.path.dirname(os.path.abspath(__file__))
+                # Поднимаемся на уровень выше (из configs в корень)
+                base_path = os.path.dirname(base_path)
+        
         settings_path = os.path.join(base_path, "settings.json")
+        
+        if not os.path.exists(settings_path):
+            logger.warning("settings.json not found, using default settings")
+            return get_default_settings()
         
         with open(settings_path, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -65,9 +70,6 @@ def init_presence_settings() -> PresenceSettings:
                 right_air_state=data.get("right_air_state", "alt"),
                 debug_mode=data.get("debug_mode", False)
             )
-    except FileNotFoundError:
-        logger.warning("settings.json not found, using default settings")
-        return get_default_settings()
     except json.JSONDecodeError as e:
         logger.error(f"Error parsing settings.json: {e}")
         return get_default_settings()

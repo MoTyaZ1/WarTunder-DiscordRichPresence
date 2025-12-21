@@ -42,8 +42,17 @@ def enable_windows_colors():
 # Включаем цвета при запуске
 enable_windows_colors()
 
+# Получаем базовый путь (одинаково для всех модулей)
+def get_base_path():
+    """Get base path for both script and EXE"""
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
+
 # Добавляем все подпапки в sys.path
-script_dir = os.path.dirname(os.path.abspath(__file__))
+base_path = get_base_path()
+script_dir = base_path
 sys.path.insert(0, script_dir)
 sys.path.insert(0, os.path.join(script_dir, 'configs'))
 sys.path.insert(0, os.path.join(script_dir, 'discord'))
@@ -60,8 +69,9 @@ def set_language(lang: str):
 def load_language_from_settings():
     """Загрузить язык из settings.json"""
     try:
-        if os.path.exists("settings.json"):
-            with open("settings.json", "r", encoding="utf-8") as f:
+        settings_path = os.path.join(base_path, "settings.json")
+        if os.path.exists(settings_path):
+            with open(settings_path, "r", encoding="utf-8") as f:
                 import json
                 data = json.load(f)
                 lang = data.get("lang", "ru")
@@ -81,10 +91,8 @@ def main():
         try:
             # Импортируем translations.py как модуль
             import importlib.util
-            spec = importlib.util.spec_from_file_location(
-                "translations", 
-                os.path.join(script_dir, "configs", "translations.py")
-            )
+            translations_path = os.path.join(script_dir, "configs", "translations.py")
+            spec = importlib.util.spec_from_file_location("translations", translations_path)
             translations_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(translations_module)
             t = lambda key: translations_module.get_translation(language, key)
@@ -94,10 +102,8 @@ def main():
         
         # Загружаем цвета напрямую
         try:
-            spec = importlib.util.spec_from_file_location(
-                "colors", 
-                os.path.join(script_dir, "configs", "colors.py")
-            )
+            colors_path = os.path.join(script_dir, "configs", "colors.py")
+            spec = importlib.util.spec_from_file_location("colors", colors_path)
             colors_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(colors_module)
             colored_text = colors_module.colored_text
@@ -106,17 +112,15 @@ def main():
             def colored_text(text: str, color_name: str) -> str:
                 return text
         
-        check_text = colored_text("CHECK", "CHECK")
         success_text = colored_text("SUCCESS", "SUCCESS")
         error_text = colored_text("ERROR", "ERROR")
         
-        # Проверка файлов
-        print(f"{check_text} [1/2]")
-        
-        if not os.path.exists("settings.json"):
+        # Проверка файлов (без номера шага)
+        settings_path = os.path.join(base_path, "settings.json")
+        if not os.path.exists(settings_path):
             print(f"{t('creating_file')}")
             try:
-                with open("settings.json", "w", encoding="utf-8") as f:
+                with open(settings_path, "w", encoding="utf-8") as f:
                     f.write(f'''{{
   "refresh_time": 7,
   "large_img": "main_logo",
@@ -137,39 +141,17 @@ def main():
         else:
             print(f"{success_text} settings.json")
         
-        # Проверка зависимостей
-        print(f"\n{check_text} [2/2]")
-        try:
-            import pypresence
-            print(f"{success_text} pypresence")
-        except ImportError as e:
-            print(f"{error_text} - pypresence {t('deps_not_installed')}")
-            print(f"{t('install_command')} pypresence")
-            sys.exit(1)
-        
-        try:
-            import requests
-            print(f"{success_text} requests")
-        except ImportError as e:
-            print(f"{error_text} - requests {t('deps_not_installed')}")
-            print(f"{t('install_command')} requests")
-            sys.exit(1)
-        
         # Импортируем остальные модули напрямую
         try:
             # settings.py
-            spec = importlib.util.spec_from_file_location(
-                "settings", 
-                os.path.join(script_dir, "configs", "settings.py")
-            )
+            settings_py_path = os.path.join(script_dir, "configs", "settings.py")
+            spec = importlib.util.spec_from_file_location("settings", settings_py_path)
             settings_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(settings_module)
             
             # logs.py
-            spec = importlib.util.spec_from_file_location(
-                "logs", 
-                os.path.join(script_dir, "configs", "logs.py")
-            )
+            logs_py_path = os.path.join(script_dir, "configs", "logs.py")
+            spec = importlib.util.spec_from_file_location("logs", logs_py_path)
             logs_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(logs_module)
             
@@ -197,7 +179,8 @@ def main():
         
         # Инициализация настроек
         try:
-            app_settings = settings.init_presence_settings()
+            # Передаем base_path в init_presence_settings
+            app_settings = settings.init_presence_settings(base_path)
         except Exception as e:
             print(f"\n{error_text} - Error initializing settings: {e}")
             traceback.print_exc()

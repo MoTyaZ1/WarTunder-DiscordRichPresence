@@ -1,7 +1,8 @@
-# discord/types/init.py
+# discord/init.py
 import logging
 import time
-from pypresence import Presence, DiscordNotFound, InvalidID
+import pypresence
+from pypresence.exceptions import DiscordNotFound, InvalidID
 
 # Импортируем новую функцию colored_text
 try:
@@ -26,6 +27,7 @@ def connect_discord_rpc(discord_code: str, lang: str = "en"):
     
     if _rpc_client is not None:
         try:
+            _rpc_client.clear_activity()
             _rpc_client.close()
         except:
             pass
@@ -35,15 +37,15 @@ def connect_discord_rpc(discord_code: str, lang: str = "en"):
     
     for attempt in range(max_attempts):
         try:
-            # Синий цвет для DISCORD, выводим напрямую в консоль
             discord_text = colored_text("DISCORD", "DISCORD")
             print(f"{discord_text} - {t('discord_connecting')}{attempt + 1}")
             
-            _rpc_client = Presence(discord_code)
-            _rpc_client.connect()
+            # Новый способ подключения
+            _rpc_client = pypresence.Client(discord_code)
+            _rpc_client.start()
             
-            # Test update with main_logo (without detailed logging)
-            _rpc_client.update(
+            # Test update with main_logo
+            _rpc_client.set_activity(
                 state="Starting",
                 details="War Thunder",
                 large_image="main_logo",
@@ -57,7 +59,6 @@ def connect_discord_rpc(discord_code: str, lang: str = "en"):
         except DiscordNotFound:
             if attempt < max_attempts - 1:
                 wait = 2 * (attempt + 1)
-                # Для ошибок тоже используем прямой вывод
                 discord_text = colored_text("DISCORD", "DISCORD")
                 print(f"{discord_text} - {t('discord_not_found')}, {t('discord_waiting')} {wait} {t('discord_seconds')}")
                 time.sleep(wait)
@@ -77,12 +78,12 @@ def connect_discord_rpc(discord_code: str, lang: str = "en"):
                 wait = 2 * (attempt + 1)
                 
                 # Try with fallback image
-                if "large_image" in error_msg:
+                if "large_image" in error_msg or "image" in error_msg.lower():
                     discord_text = colored_text("DISCORD", "DISCORD")
                     print(f"{discord_text} - {t('discord_image_problem')}")
                     try:
                         if _rpc_client:
-                            _rpc_client.update(
+                            _rpc_client.set_activity(
                                 state="War Thunder",
                                 details="Rich Presence",
                                 large_image="war_thunder",
@@ -126,8 +127,8 @@ def close_rpc():
     global _rpc_client, _start_time
     if _rpc_client is not None:
         try:
+            _rpc_client.clear_activity()
             _rpc_client.close()
-            # Don't show connection closing message
         except Exception as e:
             pass
         finally:
