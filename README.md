@@ -37,7 +37,7 @@ left_air_state - `"spd"`: Скорость TAS (км/ч), `"ias"`: Скорос�
 
 right_air_state - `"alt"`: Высота (м), `"fuel"`: Топливо (кг), `"false"` ничего не выводит
 ## Как запустить
-1. Скачайте [WarThunder RPC v1.1.0](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.0.0)
+1. Скачайте [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.0.0)
 2. Скачайте [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.0.0)
 3. запустите WarThunderDiscordRPC.exe
 4. (не обязательно) откройте любым редактором settings.json для настройки консольной программы
