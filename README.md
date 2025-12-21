@@ -18,7 +18,6 @@
   "right_tank_state": "crew",
   "left_air_state": "spd",
   "right_air_state": "alt",
-  "debug_mode": false
 }
 ```
 ## Объяснение настроек
@@ -37,8 +36,6 @@ right_tank_state - `"rpm"`: Обороты двигателя, `"crew"`: Эки�
 left_air_state - `"spd"`: Скорость TAS (км/ч), `"ias"`: Скорость IAS (км/ч), `"false"`: ничего не выводит
 
 right_air_state - `"alt"`: Высота (м), `"fuel"`: Топливо (кг), `"false"` ничего не выводит
-
-debug_mode - `false` обычные данные в консольной программе `true` подробные данные в консольной программе
 ## Как запустить
 1. Скачайте [WarThunder RPC v1.0.0](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.0.0)
 2. Скачайте [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.0.0)

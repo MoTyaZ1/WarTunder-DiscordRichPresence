@@ -21,7 +21,6 @@ class PresenceSettings:
     right_tank_state: str
     left_air_state: str
     right_air_state: str
-    debug_mode: bool = False
 
 def get_default_settings() -> PresenceSettings:
     """Get default settings"""
@@ -34,8 +33,7 @@ def get_default_settings() -> PresenceSettings:
         left_tank_state="speed",
         right_tank_state="crew",
         left_air_state="spd",
-        right_air_state="alt",
-        debug_mode=False
+        right_air_state="alt"
     )
 
 def init_presence_settings(base_path: str = None) -> PresenceSettings:
@@ -67,8 +65,7 @@ def init_presence_settings(base_path: str = None) -> PresenceSettings:
                 left_tank_state=data.get("left_tank_state", "speed"),
                 right_tank_state=data.get("right_tank_state", "crew"),
                 left_air_state=data.get("left_air_state", "spd"),
-                right_air_state=data.get("right_air_state", "alt"),
-                debug_mode=data.get("debug_mode", False)
+                right_air_state=data.get("right_air_state", "alt")
             )
     except json.JSONDecodeError as e:
         logger.error(f"Error parsing settings.json: {e}")

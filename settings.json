@@ -7,6 +7,5 @@
     "left_tank_state": "speed",
     "right_tank_state": "crew",
     "left_air_state": "spd",
-    "right_air_state": "alt",
-    "debug_mode": true
+    "right_air_state": "alt"
 }

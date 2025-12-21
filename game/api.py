@@ -69,16 +69,10 @@ def check_connection_failed():
     """Check if max attempts reached"""
     return _connection_failed
 
-def make_request(url: str, http_client, debug_mode: bool = False, lang: str = "en") -> Optional[requests.Response]:
+def make_request(url: str, http_client, lang: str = "en") -> Optional[requests.Response]:
     """Make HTTP request"""
-    if debug_mode:
-        logger.debug(f"Request to {url}")
-    
     try:
         response = http_client.get(url, timeout=5)
-        
-        if debug_mode:
-            logger.debug(f"Response from {url}: status {response.status_code}")
         
         if response.status_code != 200:
             logger.warning(f"Unexpected status code from {url}: {response.status_code}")
@@ -110,21 +104,17 @@ def make_request(url: str, http_client, debug_mode: bool = False, lang: str = "e
     
     return None
 
-def main_info_request(http_client, debug_mode: bool = False, lang: str = "en") -> Optional[MainInfoStruct]:
+def main_info_request(http_client, lang: str = "en") -> Optional[MainInfoStruct]:
     """Request main vehicle information"""
     if check_connection_failed():
         return None
         
-    response = make_request("http://127.0.0.1:8111/indicators", http_client, debug_mode, lang)
+    response = make_request("http://127.0.0.1:8111/indicators", http_client, lang)
     if not response:
         return None
     
     try:
         data = response.json()
-        
-        if debug_mode:
-            logger.debug(f"Main info data: {data}")
-        
         return MainInfoStruct(
             army_type=data.get("army", ""),
             vehicle_game_name=data.get("type", ""),
@@ -140,12 +130,12 @@ def main_info_request(http_client, debug_mode: bool = False, lang: str = "en") -
     
     return None
 
-def map_request(http_client, debug_mode: bool = False, lang: str = "en") -> MapStruct:
+def map_request(http_client, lang: str = "en") -> MapStruct:
     """Request map information"""
     if check_connection_failed():
         return MapStruct(valid=False, game_running=False)
         
-    response = make_request("http://127.0.0.1:8111/map_info.json", http_client, debug_mode, lang)
+    response = make_request("http://127.0.0.1:8111/map_info.json", http_client, lang)
     
     if response is None:
         # Connection error - game not running or max attempts reached
@@ -153,10 +143,6 @@ def map_request(http_client, debug_mode: bool = False, lang: str = "en") -> MapS
     
     try:
         data = response.json()
-        
-        if debug_mode:
-            logger.debug(f"Map data: {data}")
-            
         # Game is running, return map validity
         return MapStruct(valid=data.get("valid", False), game_running=True)
     except json.JSONDecodeError as e:
@@ -167,23 +153,17 @@ def map_request(http_client, debug_mode: bool = False, lang: str = "en") -> MapS
     # If we got here, game is running but something went wrong
     return MapStruct(valid=False, game_running=True)
 
-def air_state_request(http_client, debug_mode: bool = False, lang: str = "en") -> Tuple[bool, str]:
+def air_state_request(http_client, lang: str = "en") -> Tuple[bool, str]:
     """Request air vehicle state"""
     if check_connection_failed():
         return False, ""
         
-    response = make_request("http://127.0.0.1:8111/state", http_client, debug_mode, lang)
+    response = make_request("http://127.0.0.1:8111/state", http_client, lang)
     if not response:
         return False, ""
     
     try:
         text = response.text
-        
-        if debug_mode:
-            logger.debug(f"Air state response length: {len(text)} characters")
-            if len(text) < 500:  # Показываем короткие ответы полностью
-                logger.debug(f"Air state content: {text}")
-        
         return True, text
     except Exception as e:
         logger.error(f"Error in air_state_request: {e}")

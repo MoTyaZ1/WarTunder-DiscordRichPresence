@@ -20,7 +20,6 @@ class IndicatorsAirStruct:
     details: str = ""
     state: str = ""
     big_text: str = ""
-    debug_mode: bool = False
     
     def set_vehicle_img(self, vehicle_game_name: str):
         """Set vehicle image"""
@@ -28,7 +27,6 @@ class IndicatorsAirStruct:
     
     def set_air_vehicle_name(self, vehicle_game_name: str, settings: PresenceSettings):
         """Set readable air vehicle name"""
-        self.debug_mode = settings.debug_mode
         self.vehicle_code_name = vehicle_game_name  # ← Сохраняем кодовое имя
         
         readable_name = VEHICLE_AIR_DICT.get(vehicle_game_name, {}).get(settings.lang, "")
@@ -41,16 +39,9 @@ class IndicatorsAirStruct:
             self.readable_vehicle_name = readable_name
         
         self.set_vehicle_img(vehicle_game_name)
-        
-        if self.debug_mode:
-            print(f"[DEBUG] Air vehicle: {self.vehicle_code_name}")  # ← Показываем кодовое имя
-            print(f"[DEBUG] Readable name: {self.readable_vehicle_name}")
     
     def build_air_info(self, body_text: str) -> bool:
         """Parse air vehicle information from WT API"""
-        if self.debug_mode:
-            print(f"[DEBUG] Received API text length: {len(body_text)} characters")
-        
         try:
             # Reset values
             self.altitude = ""
@@ -62,9 +53,6 @@ class IndicatorsAirStruct:
             # Try to parse as JSON
             try:
                 data = json.loads(body_text)
-                
-                if self.debug_mode:
-                    print(f"[DEBUG] Successfully parsed JSON, keys: {list(data.keys())}")
                 
                 # Extract data from JSON
                 if "H, m" in data:
@@ -92,17 +80,11 @@ class IndicatorsAirStruct:
                     if max_fuel_value is not None:
                         self.max_fuel = str(int(max_fuel_value))
                 
-                if self.debug_mode:
-                    print(f"[DEBUG] Parsed values - Altitude: {self.altitude}, TAS: {self.tas_speed}, IAS: {self.ias_speed}")
-                    print(f"[DEBUG] Fuel: {self.current_fuel}/{self.max_fuel}")
-                
                 # Check if we got any values
                 if any([self.altitude, self.tas_speed, self.ias_speed, self.current_fuel, self.max_fuel]):
                     return True
                     
-            except json.JSONDecodeError as json_err:
-                if self.debug_mode:
-                    print(f"[DEBUG] Failed to parse as JSON: {json_err}")
+            except json.JSONDecodeError:
                 # Fallback: text parsing
                 if not self._parse_text_fallback(body_text):
                     return False
@@ -111,10 +93,6 @@ class IndicatorsAirStruct:
             return True
                 
         except Exception as e:
-            print(f"[ERROR] Error parsing air vehicle information: {e}")
-            if self.debug_mode:
-                import traceback
-                traceback.print_exc()
             return False
     
     def _parse_text_fallback(self, body_text: str) -> bool:
@@ -157,9 +135,6 @@ class IndicatorsAirStruct:
                     self.max_fuel = cleaned_value
                     found_values.append('max_fuel')
         
-        if self.debug_mode:
-            print(f"[DEBUG] Text parsing found: {found_values}")
-        
         return len(found_values) > 0
     
     def set_big_img_text(self, settings: PresenceSettings):
@@ -191,9 +166,6 @@ class IndicatorsAirStruct:
                 self.big_text = BASIC_STATE_DICT["in_battle"][settings.lang]
         else:
             self.big_text = self.readable_vehicle_name
-            
-        if self.debug_mode:
-            print(f"[DEBUG] Big text: {self.big_text}")
     
     def set_state(self, settings: PresenceSettings):
         """Set state"""
@@ -226,9 +198,6 @@ class IndicatorsAirStruct:
         else:
             # When alt_presence is on, state is empty
             self.state = ""
-            
-        if self.debug_mode:
-            print(f"[DEBUG] State: {self.state}")
     
     def set_details(self, settings: PresenceSettings):
         """Set details"""
@@ -236,6 +205,3 @@ class IndicatorsAirStruct:
             self.details = f"{VEHICLE_STATES_DICT['play_on'][settings.lang]}: {self.readable_vehicle_name}"
         else:
             self.details = ""
-            
-        if self.debug_mode:
-            print(f"[DEBUG] Details: {self.details}");

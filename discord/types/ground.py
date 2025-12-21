@@ -17,20 +17,13 @@ class IndicatorsGroundStruct:
     details: str = ""
     state: str = ""
     big_text: str = ""
-    debug_mode: bool = False
     
     def set_vehicle_img(self, vehicle_game_name: str):
         """Set vehicle image"""
         self.img = f"https://static.encyclopedia.warthunder.com/images/{vehicle_game_name}.png"
-        
-        if self.debug_mode:
-            print(f"[DEBUG] Vehicle image URL: {self.img}")
     
     def set_speed_crew_data(self, speed: float, total: float, current: float, rpm: float = 0.0):
         """Set speed, crew and RPM data"""
-        if self.debug_mode:
-            print(f"[DEBUG] Ground vehicle data: speed={speed}, crew={current}/{total}, rpm={rpm}")
-        
         self.speed = speed
         self.total_crew = total
         self.current_crew = current
@@ -38,7 +31,6 @@ class IndicatorsGroundStruct:
     
     def set_ground_vehicle_name(self, vehicle_game_name: str, settings: PresenceSettings):
         """Set readable ground vehicle name"""
-        self.debug_mode = settings.debug_mode
         self.vehicle_code_name = vehicle_game_name  # ← Сохраняем кодовое имя
         
         fixed_name = vehicle_game_name.replace("tankModels/", "")
@@ -52,10 +44,6 @@ class IndicatorsGroundStruct:
             self.readable_vehicle_name = stripped_name
         else:
             self.readable_vehicle_name = readable_name
-        
-        if self.debug_mode:
-            print(f"[DEBUG] Ground vehicle: {self.vehicle_code_name}")  # ← Показываем кодовое имя
-            print(f"[DEBUG] Readable name: {self.readable_vehicle_name} (fixed: {fixed_name})")
     
     def set_big_img_text(self, settings: PresenceSettings):
         """Set large image text"""
@@ -84,9 +72,6 @@ class IndicatorsGroundStruct:
                 self.big_text = BASIC_STATE_DICT["in_battle"][settings.lang]
         else:
             self.big_text = self.readable_vehicle_name
-            
-        if self.debug_mode:
-            print(f"[DEBUG] Big text: {self.big_text}")
     
     def set_state(self, settings: PresenceSettings):
         """Set state"""
@@ -117,9 +102,6 @@ class IndicatorsGroundStruct:
         else:
             # When alt_presence is on, state is empty
             self.state = ""
-            
-        if self.debug_mode:
-            print(f"[DEBUG] State: {self.state}")
     
     def set_details(self, settings: PresenceSettings):
         """Set details"""
@@ -127,6 +109,3 @@ class IndicatorsGroundStruct:
             self.details = f"{VEHICLE_STATES_DICT['play_on'][settings.lang]}: {self.readable_vehicle_name}"
         else:
             self.details = ""
-            
-        if self.debug_mode:
-            print(f"[DEBUG] Details: {self.details}")

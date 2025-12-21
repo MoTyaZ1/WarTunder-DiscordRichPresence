@@ -98,10 +98,7 @@ def set_ground_state(settings: PresenceSettings, main_info: MainInfoStruct) -> b
 def set_air_state(settings: PresenceSettings, http_client, main_info: MainInfoStruct) -> bool:
     """Set status for air vehicles"""
     try:
-        if settings.debug_mode:
-            print(f"[DEBUG] Air vehicle code from API: {main_info.vehicle_game_name}")
-        
-        success, state_body = game_api.air_state_request(http_client, settings.debug_mode, settings.lang)
+        success, state_body = game_api.air_state_request(http_client, settings.lang)
         
         if not success:
             logger.error("Failed to get data from WT API")
@@ -203,7 +200,7 @@ def run_update_presence_loop(settings: PresenceSettings, http_client):
                 
                 sys.exit(1)
             
-            map_data = game_api.map_request(http_client, settings.debug_mode, settings.lang)
+            map_data = game_api.map_request(http_client, settings.lang)
             
             if not map_data.game_running:
                 # Game not running
@@ -217,7 +214,7 @@ def run_update_presence_loop(settings: PresenceSettings, http_client):
                 
             elif map_data.valid:
                 # Game running and in battle
-                indicators = game_api.main_info_request(http_client, settings.debug_mode, settings.lang)
+                indicators = game_api.main_info_request(http_client, settings.lang)
                 if not indicators:
                     set_presence(
                         state=BASIC_STATE_DICT["in_battle"][settings.lang],

@@ -115,7 +115,7 @@ def main():
         success_text = colored_text("SUCCESS", "SUCCESS")
         error_text = colored_text("ERROR", "ERROR")
         
-        # Проверка файлов (без номера шага)
+        # Проверка файлов
         settings_path = os.path.join(base_path, "settings.json")
         if not os.path.exists(settings_path):
             print(f"{t('creating_file')}")
@@ -130,8 +130,7 @@ def main():
   "left_tank_state": "speed",
   "right_tank_state": "crew",
   "left_air_state": "spd",
-  "right_air_state": "alt",
-  "debug_mode": false
+  "right_air_state": "alt"
 }}''')
                 print(f"{success_text} {t('file_created')}")
             except Exception as e:
