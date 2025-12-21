@@ -1,3 +1,4 @@
+# configs/translations.py
 """
 Translations for console messages
 """

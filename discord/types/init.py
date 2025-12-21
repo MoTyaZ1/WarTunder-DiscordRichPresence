@@ -1,3 +1,4 @@
+# discord/types/init.py
 """
 Инициализация модуля types
 """

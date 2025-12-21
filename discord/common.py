@@ -1,3 +1,4 @@
+# discord/common.py
 import datetime
 
 # Словари с названиями техники

@@ -1,3 +1,4 @@
+# discord/types/init.py
 import logging
 import time
 from pypresence import Presence, DiscordNotFound, InvalidID

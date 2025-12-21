@@ -1,3 +1,4 @@
+# discord/types/air.py
 from dataclasses import dataclass
 from configs.settings import PresenceSettings
 from discord.common import VEHICLE_AIR_DICT, VEHICLE_STATES_DICT, BASIC_STATE_DICT
@@ -237,4 +238,4 @@ class IndicatorsAirStruct:
             self.details = ""
             
         if self.debug_mode:
-            print(f"[DEBUG] Details: {self.details}")
+            print(f"[DEBUG] Details: {self.details}");
