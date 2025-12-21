@@ -2,6 +2,45 @@ import sys
 import os
 import traceback
 
+# ВКЛЮЧЕНИЕ ПОДДЕРЖКИ ЦВЕТОВ ДЛЯ WINDOWS
+def enable_windows_colors():
+    """Включает поддержку ANSI цветов в консоли Windows"""
+    if sys.platform != "win32":
+        return True  # Для не-Windows систем цвета уже работают
+    
+    # Способ 1: Самый простой и часто работающий метод
+    os.system("")
+    
+    # Способ 2: Используем Windows API для надежности
+    try:
+        import ctypes
+        
+        # Определяем константы
+        STD_OUTPUT_HANDLE = -11
+        ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
+        ENABLE_PROCESSED_OUTPUT = 0x0001
+        ENABLE_WRAP_AT_EOL_OUTPUT = 0x0002
+        
+        # Получаем handle консоли
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+        
+        # Получаем текущий режим
+        mode = ctypes.c_uint32()
+        if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+            # Устанавливаем новый режим с поддержкой виртуального терминала
+            new_mode = mode.value | ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT
+            kernel32.SetConsoleMode(handle, new_mode)
+            return True
+    except Exception:
+        # Если не получилось - продолжаем без цветов
+        pass
+    
+    return False
+
+# Включаем цвета при запуске
+enable_windows_colors()
+
 # Добавляем все подпапки в sys.path
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, script_dir)
