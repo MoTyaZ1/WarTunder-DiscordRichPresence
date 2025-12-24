@@ -1,6 +1,7 @@
 # WarTunderDiscordRPC
-[![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 Это консольная программа для отображения в Discord подробной информации для игры War Tunder на основе получаемых данных, доступных по адресу 8111
+
+[![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 ## Фото
 <img width="420" height="136" alt="image" src="https://github.com/user-attachments/assets/662e6322-fb9f-44d7-bd8c-ecd3ca941637" />
 <img width="420" height="136" alt="image" src="https://github.com/user-attachments/assets/e9b582a9-8a2f-4827-a899-8488b5a9e663" />
