@@ -4,8 +4,7 @@ import logging
 import sys
 
 from configs.settings import PresenceSettings
-from discord.common import BASIC_STATE_DICT, VEHICLE_STATES_DICT
-from discord.types.map import MapStruct
+from .common import BASIC_STATE_DICT, VEHICLE_STATES_DICT
 from discord.types.info import MainInfoStruct
 from game import api as game_api
 from configs import logs as tools_logger

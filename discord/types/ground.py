@@ -51,14 +51,14 @@ class IndicatorsGroundStruct:
             left_text = ""
             right_text = ""
             
-            # Left parameter
-            if settings.left_tank_state == "speed" and self.speed > 0:
+            # Left parameter - УБИРАЕМ ПРОВЕРКУ > 0
+            if settings.left_tank_state == "speed":
                 left_text = f"{VEHICLE_STATES_DICT['speed_ground'][settings.lang]}: {int(self.speed)} km/h"
             
-            # Right parameter
-            if settings.right_tank_state == "rpm" and self.rpm > 0:
+            # Right parameter - УБИРАЕМ ПРОВЕРКУ > 0
+            if settings.right_tank_state == "rpm":
                 right_text = f"{VEHICLE_STATES_DICT['rpm'][settings.lang]}: {int(self.rpm)}"
-            elif settings.right_tank_state == "crew" and self.total_crew > 0:
+            elif settings.right_tank_state == "crew" and self.total_crew > 0:  # Экипаж оставляем с проверкой
                 right_text = f"{VEHICLE_STATES_DICT['crew_count'][settings.lang]}: {int(self.current_crew)}/{int(self.total_crew)}"
             
             # Form final text
@@ -80,14 +80,14 @@ class IndicatorsGroundStruct:
             left_text = ""
             right_text = ""
             
-            # Left parameter
-            if settings.left_tank_state == "speed" and self.speed > 0:
+            # Left parameter - УБИРАЕМ ПРОВЕРКУ > 0
+            if settings.left_tank_state == "speed":
                 left_text = f"{VEHICLE_STATES_DICT['speed_ground'][settings.lang]}: {int(self.speed)} km/h"
             
-            # Right parameter
-            if settings.right_tank_state == "rpm" and self.rpm > 0:
+            # Right parameter - УБИРАЕМ ПРОВЕРКУ > 0 для RPM
+            if settings.right_tank_state == "rpm":
                 right_text = f"{VEHICLE_STATES_DICT['rpm'][settings.lang]}: {int(self.rpm)}"
-            elif settings.right_tank_state == "crew" and self.total_crew > 0:
+            elif settings.right_tank_state == "crew" and self.total_crew > 0:  # Экипаж оставляем с проверкой
                 right_text = f"{VEHICLE_STATES_DICT['crew_count'][settings.lang]}: {int(self.current_crew)}/{int(self.total_crew)}"
             
             # Form final text

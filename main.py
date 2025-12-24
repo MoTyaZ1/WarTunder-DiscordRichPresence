@@ -4,6 +4,9 @@ import os
 import traceback
 import json
 
+os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+sys.dont_write_bytecode = True
+
 # ВКЛЮЧЕНИЕ ПОДДЕРЖКИ ЦВЕТОВ ДЛЯ WINDOWS
 def enable_windows_colors():
     """Включает поддержку ANSI цветов в консоли Windows"""
