@@ -1,3 +1,6 @@
+<p align="center">
+<img width="850" height="274" alt="banner-discrod-wartunder" src="https://github.com/user-attachments/assets/2a071c03-df35-427e-86db-08cc9143f59c" />
+</p>
 # WarTunderDiscordRPC
 Это консольная программа для отображения в Discord подробной информации для игры War Tunder на основе получаемых данных, доступных по адресу 8111
 
