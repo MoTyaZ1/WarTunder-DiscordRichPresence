@@ -1,8 +1,9 @@
 <p align="center">
-<img width="850" height="274" alt="banner-discrod-wartunder" src="https://github.com/user-attachments/assets/2a071c03-df35-427e-86db-08cc9143f59c" />
+<img width="1000" height="322" alt="banner-discord-wartunder" src="https://github.com/user-attachments/assets/a26d8fb9-1515-4fc0-8996-f9a9e931e81d" />
 </p>
+
 # WarTunderDiscordRPC
-Это консольная программа для отображения в Discord подробной информации для игры War Tunder на основе получаемых данных, доступных по адресу 8111
+Это консольная программа для отображения статуса в Discord для игры War Tunder на основе получаемых данных от War Tunder, доступных по адресу 8111
 
 [![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 ## Фото
