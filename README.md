@@ -80,6 +80,6 @@ right_air_state - `"alt"`: Высота (м), `"fuel"`: Топливо (кг), `
 
 Протестированно было на Windows 11 Pro - 25H2 26220.7523 и Windows 10 Pro - 22H2 19045.6456
 
-Программа была сделана под список техники из обновления (War Tunder 2.53.0.26)[https://warthunder.ru/ru/game/changelog/current/3098]
+Программа была сделана под список техники из обновления [War Tunder 2.53.0.26](https://warthunder.ru/ru/game/changelog/current/3098)
 ## Лицензирование
 Данный репозиторий распространяется под лицензией MIT. [Подробнее](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/blob/main/LICENSE.md)
