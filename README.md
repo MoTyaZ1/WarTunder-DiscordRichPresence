@@ -1,10 +1,47 @@
+<p align="center">
+<img width="1000" height="322" alt="banner-discord-wartunder" src="https://github.com/user-attachments/assets/a26d8fb9-1515-4fc0-8996-f9a9e931e81d" />
+</p>
+
 # WarTunderDiscordRPC
-Это консольная программа для отображения в Discord подробной информации для игры War Tunder на основе получаемых данных, доступных по адресу 8111
+**Это консольная программа для отображения подробного статуса в Discord для игры War Tunder на основе получаемых данных от War Tunder, доступных по адресу 8111.**
+
+[![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 ## Фото
-<img width="420" height="136" alt="image" src="https://github.com/user-attachments/assets/662e6322-fb9f-44d7-bd8c-ecd3ca941637" />
-<img width="420" height="136" alt="image" src="https://github.com/user-attachments/assets/e9b582a9-8a2f-4827-a899-8488b5a9e663" />
-<img width="420" height="136" alt="image" src="https://github.com/user-attachments/assets/49aedc3c-5e28-4d57-a831-45cdbd1d85f2" />
-<img width="420" height="136" alt="image" src="https://github.com/user-attachments/assets/1a62edbc-21d1-4905-9950-01c3f431d989" />
+**Статус, когда игра не запущена:**
+
+<img width="448" height="159" alt="Game launching" src="https://github.com/user-attachments/assets/0086fecc-9d8e-40e8-b38b-0c5bc1cfd05f" />
+
+**Статус, когда вы зашли в игру, но не в бою:**
+
+<img width="448" height="159" alt="Hangar" src="https://github.com/user-attachments/assets/b52858c8-e4db-4d2b-8bc1-af9510b257ca" />
+
+**Статус, когда вы в бою на танке:**
+
+<img width="448" height="159" alt="Ground" src="https://github.com/user-attachments/assets/0ef26c4d-86f4-49e1-b67e-dcf0d4a49f83" />
+
+**Статус, когда вы в бою на самолёте:**
+
+<img width="448" height="159" alt="Air" src="https://github.com/user-attachments/assets/e00e69f6-1cef-479f-8065-2824ecdda780" />
+
+## Как запустить
+1. Скачайте [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0)
+2. Скачайте [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0)
+3. Запустите WarThunderDiscordRPC.exe
+4. (Не обязательно) Откройте любым редактором settings.json для настройки консольной программы
+## Как сделать автозапуск для Steam версии
+1. Зайдите в Steam и откройте вкладку "БИБЛИОТЕКА"
+2. Найдите вашу игру "War Tunder"
+3. Откройте свойства "War Tunder"
+4. В открытой вкладке "Общие" в "ПАРАМЕТРЫ ЗАПУСКА" скопируйте и вставьте: ```rpc.bat %COMMAND%```
+5. Создайте rpc.txt с этим содержанием:
+```
+@echo off
+start beac_wt_mlauncher.exe
+WarThunderDiscordRPC.exe
+pause
+```
+6. Переименуйте rpc.txt в rpc.bat
+7. Скачайте и поместите [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) и [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) в корневую папку игры.
 
 ## Настройки по умолчанию
 ```
@@ -21,29 +58,30 @@
 }
 ```
 ## Объяснение настроек
-refresh_time - Интервал обновления статуса в секундах Рекомендовано `7` Минимально `5`
+refresh_time - Интервал обновления статуса в секундах Рекомендовано: `7`, Минимально: `5`.
 
-large_img - `"main_logo"` пока что только есть одно фото
+large_img - `"main_logo"` (пока что только есть одно фото, у меня нету идей какую фотографию ещё добавить).
 
-alt_presence - `true`: Параметры техники показываются в тексте картинки, `false`: Параметры техники показываются в основном статусе
+alt_presence - `true`: Параметры техники показываются в тексте картинки, `false`: Параметры техники показываются в основном статусе.
 
-lang - Язык интерфейса программы и отображения дополнительной информации discord `"ru"`: русский, `"en"` англиский
+lang - Язык интерфейса программы и отображения дополнительной информации discord `"ru"`: русский, `"en"`: англиский.
 
-vehicle_details - `"speed"`: Скорость (км/ч), `"false"`: ничего не выводит
+vehicle_details - `"speed"`: Скорость (км/ч), `"false"`: ничего не выводит.
 
-right_tank_state - `"rpm"`: Обороты двигателя, `"crew"`: Экипаж (текущий/максимальный), `"false"`: ничего не выводит
+right_tank_state - `"rpm"`: Обороты двигателя, `"crew"`: Экипаж (текущий/максимальный), `"false"`: ничего не выводит.
 
-left_air_state - `"spd"`: Скорость TAS (км/ч), `"ias"`: Скорость IAS (км/ч), `"false"`: ничего не выводит
+left_air_state - `"spd"`: Скорость TAS (км/ч), `"ias"`: Скорость IAS (км/ч), `"false"`: ничего не выводит.
 
-right_air_state - `"alt"`: Высота (м), `"fuel"`: Топливо (кг), `"false"` ничего не выводит
-## Как запустить
-1. Скачайте [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.0.0)
-2. Скачайте [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.0.0)
-3. запустите WarThunderDiscordRPC.exe
-4. (не обязательно) откройте любым редактором settings.json для настройки консольной программы
+right_air_state - `"alt"`: Высота (м), `"fuel"`: Топливо (кг), `"false"`: ничего не выводит.
+## Список техники
+Программа была сделана под список техники из обновления [War Tunder 2.53.0.26](https://warthunder.ru/ru/game/changelog/current/3098).
+
+Информация не будет отображаться с (Большим флотом, Малым флотом, Ядерным самолётом, Техникой из ивента) вместо этого будет статус в бою.
 ## Ответы
-Это моя первая программа 
+Портировать консольную программу на Linux и тем более для macOS не буду (как минимум долгое время).
 
-Портировать консольную программу на Linux и macOS не буду
-
-Протестированно было на Windows 11 Pro - 25H2 26220.7523 и Windows 10 Pro - 22H2 19045.6456
+Протестировано было на Windows 11 Pro - 25H2 26220.7523 и Windows 10 Pro - 22H2 19045.6456.
+## Планы на будущее обновление
+1. Добавить проверку обновлений.
+## Лицензирование
+Данный репозиторий распространяется под лицензией MIT. [Подробнее](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/blob/main/LICENSE.md).
