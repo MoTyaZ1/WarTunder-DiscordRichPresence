@@ -3,79 +3,156 @@ import sys
 import os
 import traceback
 import json
+import importlib.util
 
 os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
 sys.dont_write_bytecode = True
 
-# ВКЛЮЧЕНИЕ ПОДДЕРЖКИ ЦВЕТОВ ДЛЯ WINDOWS
-def enable_windows_colors():
-    """Включает поддержку ANSI цветов в консоли Windows"""
-    if sys.platform != "win32":
-        return True  # Для не-Windows систем цвета уже работают
-    
-    # Способ 1: Самый простой и часто работающий метод
-    os.system("")
-    
-    # Способ 2: Используем Windows API для надежности
-    try:
-        import ctypes
-        
-        # Определяем константы
-        STD_OUTPUT_HANDLE = -11
-        ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
-        ENABLE_PROCESSED_OUTPUT = 0x0001
-        ENABLE_WRAP_AT_EOL_OUTPUT = 0x0002
-        
-        # Получаем handle консоли
-        kernel32 = ctypes.windll.kernel32
-        handle = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
-        
-        # Получаем текущий режим
-        mode = ctypes.c_uint32()
-        if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
-            # Устанавливаем новый режим с поддержкой виртуального терминала
-            new_mode = mode.value | ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT
-            kernel32.SetConsoleMode(handle, new_mode)
-            return True
-    except Exception:
-        # Если не получилось - продолжаем без цветов
-        pass
-    
-    return False
-
-# Включаем цвета при запуске
-enable_windows_colors()
-
-# Получаем базовый путь (одинаково для всех модулей)
+# Получаем базовый путь
 def get_base_path():
     """Get base path for both script and EXE"""
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
+    elif hasattr(sys, '_MEIPASS'):
+        # Для временной папки PyInstaller
+        return sys._MEIPASS
     else:
         return os.path.dirname(os.path.abspath(__file__))
 
-# Добавляем все подпапки в sys.path
-base_path = get_base_path()
-sys.path.insert(0, base_path)
-sys.path.insert(0, os.path.join(base_path, 'configs'))
-sys.path.insert(0, os.path.join(base_path, 'discord'))
-sys.path.insert(0, os.path.join(base_path, 'game'))
+# Глобальная переменная для базового пути
+BASE_PATH = get_base_path()
 
-# Простая функция для цветов на случай если модуль не загрузится
-def simple_colored_text(text: str, color_name: str) -> str:
-    """Простая заглушка для цветного текста"""
-    color_codes = {
-        'SUCCESS': '\033[92m',    # Зеленый
-        'ERROR': '\033[91m',      # Красный
-        'INFO': '\033[37m',       # Белый
-        'WARNING': '\033[93m',    # Желтый
-        'CRITICAL ERROR': '\033[31m',  # Темно-красный
-        'DISCORD': '\033[94m',    # Синий
-        'CHECK': '\033[37m',      # Белый
+# Функция для динамической загрузки модулей (РАБОТАЕТ С PYINSTALLER)
+def load_module(module_name, file_path):
+    """Динамически загружает модуль из файла"""
+    try:
+        # Если мы в EXE-режиме PyInstaller, импортируем напрямую
+        if getattr(sys, 'frozen', False):
+            # Пробуем импортировать обычным способом
+            try:
+                # Для configs модулей
+                if module_name == "settings":
+                    from configs import settings as module
+                    return module
+                elif module_name == "logs":
+                    from configs import logs as module
+                    return module
+                elif module_name == "colors":
+                    from configs import colors as module
+                    return module
+                elif module_name == "translations":
+                    from configs import translations as module
+                    return module
+                # Для game модулей
+                elif module_name == "game_api":
+                    from game import api as module
+                    return module
+                # Для discord модулей
+                elif module_name == "handler":
+                    from discord import handler as module
+                    return module
+                elif module_name == "discord_init":
+                    # Пробуем разные варианты
+                    try:
+                        from discord import rpc as module
+                        return module
+                    except ImportError:
+                        try:
+                            from discord import init as module
+                            return module
+                        except ImportError:
+                            pass
+            except ImportError as e:
+                print(f"ImportError for {module_name}: {e}")
+                # Пробуем альтернативный путь
+                return None
+        else:
+            # Для обычного режима (не EXE) используем старый метод
+            if not os.path.exists(file_path):
+                print(f"File not found: {file_path}")
+                return None
+            
+            spec = importlib.util.spec_from_file_location(module_name, file_path)
+            if spec is None:
+                print(f"Could not create spec for: {module_name}")
+                return None
+            
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+            return module
+    except Exception as e:
+        print(f"Error loading module {module_name}: {e}")
+        return None
+
+# Загружаем основные модули для цветов и переводов (УПРОЩЕННАЯ ВЕРСИЯ)
+def load_essential_modules():
+    """Загружает основные модули для работы программы"""
+    modules = {}
+    
+    # Файлы для поиска
+    files_to_find = {
+        'translations': 'translations',
+        'colors': 'colors',
+        'settings': 'settings',
+        'logs': 'logs',
     }
-    reset = '\033[0m'
-    color = color_codes.get(color_name, '')
-    return f"{color}{text}{reset}"
+    
+    # Пробуем загрузить каждый модуль
+    for module_name, module_import_name in files_to_find.items():
+        module_loaded = False
+        
+        try:
+            # Пробуем импортировать как пакет configs
+            module = __import__(f'configs.{module_import_name}', fromlist=[module_import_name])
+            modules[module_name] = module
+            module_loaded = True
+        except ImportError:
+            # Пробуем альтернативные пути
+            if getattr(sys, 'frozen', False):
+                # В EXE режиме
+                try:
+                    if hasattr(sys, '_MEIPASS'):
+                        # Ищем во временной папке PyInstaller
+                        search_paths = [
+                            os.path.join(sys._MEIPASS, f"{module_import_name}.py"),
+                            os.path.join(sys._MEIPASS, "configs", f"{module_import_name}.py"),
+                            os.path.join(BASE_PATH, "configs", f"{module_import_name}.py"),
+                        ]
+                        
+                        for file_path in search_paths:
+                            if os.path.exists(file_path):
+                                module = load_module(module_name, file_path)
+                                if module:
+                                    modules[module_name] = module
+                                    module_loaded = True
+                                    break
+                except:
+                    pass
+        
+        if not module_loaded:
+            print(f"Warning: Could not load {module_name} module")
+            modules[module_name] = None
+    
+    return modules
+
+# Загружаем основные модули СРАЗУ (после определения функций)
+essential_modules = load_essential_modules()
+
+# Создаем простые заглушки если модули не загружены
+class SimpleColors:
+    @staticmethod
+    def colored_text(text: str, color_name: str) -> str:
+        return text
+
+class SimpleTranslations:
+    @staticmethod
+    def get_translation(lang: str, key: str) -> str:
+        return key
+
+# Создаем глобальные переменные
+_colors_module = essential_modules.get('colors') or SimpleColors()
+_translations_module = essential_modules.get('translations') or SimpleTranslations()
 
 # Глобальная переменная для языка
 _current_language = "ru"
@@ -88,7 +165,7 @@ def set_language(lang: str):
 def load_language_from_settings():
     """Загрузить язык из settings.json"""
     try:
-        settings_path = os.path.join(base_path, "settings.json")
+        settings_path = os.path.join(BASE_PATH, "settings.json")
         if os.path.exists(settings_path):
             with open(settings_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -98,6 +175,82 @@ def load_language_from_settings():
         pass
     return "ru"
 
+# Функция для цветного текста
+def get_colored_text_func():
+    """Получает функцию colored_text"""
+    if hasattr(_colors_module, 'colored_text'):
+        return _colors_module.colored_text
+    else:
+        return lambda text, color: text
+
+# Функция для перевода
+def get_translation_func(lang: str):
+    """Получает функцию перевода"""
+    if hasattr(_translations_module, 'get_translation'):
+        return lambda key: _translations_module.get_translation(lang, key)
+    else:
+        return lambda key: key
+
+def check_for_updates(lang: str = "en"):
+    """Проверка обновлений через GitHub API"""
+    try:
+        import requests
+        
+        # Получаем функции перевода
+        t = get_translation_func(lang)
+        
+        # Получаем функцию для цветов
+        colored_text = get_colored_text_func()
+        update_text = colored_text("UPDATE", "UPDATE") if colored_text("UPDATE", "UPDATE") != "UPDATE" else "UPDATE"
+        check_text = colored_text("CHECK", "CHECK") if colored_text("CHECK", "CHECK") != "CHECK" else "CHECK"
+        
+        print(f"{check_text} - {t('update_checking')}")
+        
+        # URL для получения последнего релиза
+        url = "https://api.github.com/repos/MoTyaZ1/WarTunder-DiscordRichPresence/releases/latest"
+        
+        # Делаем запрос к GitHub API
+        response = requests.get(url, timeout=10)
+        
+        if response.status_code == 200:
+            release_data = response.json()
+            latest_version = release_data.get("tag_name", "")
+            html_url = release_data.get("html_url", "")
+            
+            # Получаем текущую версию
+            current_version = "v1.3.0"  # Версия по умолчанию
+            
+            # Пробуем прочитать версию из файла version.txt если он есть
+            version_file = os.path.join(BASE_PATH, "version.txt")
+            if os.path.exists(version_file):
+                try:
+                    with open(version_file, "r", encoding="utf-8") as f:
+                        current_version = f.read().strip()
+                except:
+                    pass
+            
+            # Сравниваем версии
+            if latest_version and latest_version != current_version:
+                print(f"{update_text} - {t('update_current_version')}: {current_version}")
+                print(f"{update_text} - {t('update_latest_version')}: {latest_version}")
+                print(f"{update_text} - {t('update_download')}: {html_url}")
+            else:
+                # Выводим текущую версию
+                print(f"{update_text} - {t('update_current_version')}: {current_version}")
+            
+    except requests.exceptions.ConnectionError:
+        # Если нет интернета
+        print(f"{update_text} - {t('update_no_internet')}")
+        return False
+    except requests.exceptions.RequestException as e:
+        # Если GitHub недоступен
+        print(f"{update_text} - {t('update_check_failed')}")
+        return False
+    except Exception as e:
+        # Любая другая ошибка
+        print(f"{update_text} - {t('update_check_failed')}")
+        return False
+
 def main():
     """Основная функция"""
     try:
@@ -105,15 +258,23 @@ def main():
         language = load_language_from_settings()
         set_language(language)
         
-        # Используем простую функцию для цветов на старте
-        colored_text = simple_colored_text
+        # Получаем функции перевода и цветов
+        t = get_translation_func(language)
+        colored_text = get_colored_text_func()
+        
+        # Создаем цветные префиксы
         success_text = colored_text("SUCCESS", "SUCCESS")
         error_text = colored_text("ERROR", "ERROR")
+        info_text = colored_text("INFO", "INFO")
+        warning_text = colored_text("WARNING", "WARNING")
+        
+        # Проверка обновлений в самом начале
+        check_for_updates(language)
         
         # Проверка файлов
-        settings_path = os.path.join(base_path, "settings.json")
+        settings_path = os.path.join(BASE_PATH, "settings.json")
         if not os.path.exists(settings_path):
-            print("Creating settings.json...")
+            print(f"{info_text} - Creating settings.json...")
             try:
                 with open(settings_path, "w", encoding="utf-8") as f:
                     f.write(f'''{{
@@ -127,145 +288,68 @@ def main():
   "left_air_state": "spd",
   "right_air_state": "alt"
 }}''')
-                print(f"{success_text} settings.json created")
+                print(f"{success_text} - settings.json created")
             except Exception as e:
                 print(f"{error_text} - Error loading settings.json: {e}")
-                input("\nPress Enter to exit...")
+                input(f"\n{t('press_enter')}")
                 return
         else:
-            print(f"{success_text} settings.json")
+            print(f"{success_text} - settings.json")
         
-        # Пытаемся импортировать модули
-        t = lambda key: key  # временная функция перевода
-        
+        # Пытаемся импортировать остальные модули
         try:
-            # Пробуем импортировать как модули из папки configs
-            from configs import settings as settings_module
-            from configs import logs as logs_module
-            from configs import translations as translations_module
-            from configs import colors as colors_module
-            
-            # Пробуем использовать функцию из colors_module если она есть
-            try:
-                colored_text = colors_module.colored_text
-                success_text = colored_text("SUCCESS", "SUCCESS")
-                error_text = colored_text("ERROR", "ERROR")
-            except:
-                pass  # Оставляем простую версию
-            
-            # Устанавливаем функцию перевода
-            t = lambda key: translations_module.get_translation(language, key)
-            
-            # Импортируем остальные модули
-            from game import api as game_api
-            from discord import handler as handler_module
-            from discord import init as discord_init_module
-            
-            # Сохраняем ссылки
-            settings = settings_module
-            logs = logs_module
-            handler = handler_module
-            discord_init = discord_init_module
-            api = game_api
-            
-        except ImportError as e:
-            print(f"Import error: {e}")
-            traceback.print_exc()
-            
-            # Пробуем альтернативный способ импорта
-            try:
-                # Добавляем пути в sys.path
-                for folder in ['configs', 'discord', 'game']:
-                    folder_path = os.path.join(base_path, folder)
-                    if os.path.exists(folder_path) and folder_path not in sys.path:
-                        sys.path.insert(0, folder_path)
-                
-                # Пробуем импортировать снова с полными путями
-                import importlib
-                
-                # Динамически импортируем модули
-                settings_spec = importlib.util.spec_from_file_location(
-                    "settings", 
-                    os.path.join(base_path, "configs", "settings.py")
-                )
-                settings_module = importlib.util.module_from_spec(settings_spec)
-                sys.modules["settings"] = settings_module
-                settings_spec.loader.exec_module(settings_module)
-                
-                logs_spec = importlib.util.spec_from_file_location(
-                    "logs", 
-                    os.path.join(base_path, "configs", "logs.py")
-                )
-                logs_module = importlib.util.module_from_spec(logs_spec)
-                sys.modules["logs"] = logs_module
-                logs_spec.loader.exec_module(logs_module)
-                
-                translations_spec = importlib.util.spec_from_file_location(
-                    "translations", 
-                    os.path.join(base_path, "configs", "translations.py")
-                )
-                translations_module = importlib.util.module_from_spec(translations_spec)
-                sys.modules["translations"] = translations_module
-                translations_spec.loader.exec_module(translations_module)
-                
-                colors_spec = importlib.util.spec_from_file_location(
-                    "colors", 
-                    os.path.join(base_path, "configs", "colors.py")
-                )
-                colors_module = importlib.util.module_from_spec(colors_spec)
-                sys.modules["colors"] = colors_module
-                colors_spec.loader.exec_module(colors_module)
-                
-                # Пробуем использовать функцию из colors_module
+            # Для EXE режима импортируем напрямую
+            if getattr(sys, 'frozen', False):
                 try:
-                    colored_text = colors_module.colored_text
-                    success_text = colored_text("SUCCESS", "SUCCESS")
-                    error_text = colored_text("ERROR", "ERROR")
-                except:
-                    pass
+                    from configs import settings
+                    from configs import logs
+                    from game import api as game_api
+                    from discord import handler
+                    
+                    # Пробуем разные варианты для discord rpc
+                    try:
+                        from discord import rpc as discord_init
+                    except ImportError:
+                        from discord import init as discord_init
+                    
+                    print(f"{info_text} - Modules imported successfully in EXE mode")
+                    
+                except ImportError as e:
+                    print(f"{error_text} - Failed to import modules in EXE mode: {e}")
+                    raise ImportError("Failed to import modules")
+            else:
+                # Для обычного режима используем load_module
+                settings = load_module("settings", os.path.join(BASE_PATH, "configs", "settings.py"))
+                logs = load_module("logs", os.path.join(BASE_PATH, "configs", "logs.py"))
+                game_api = load_module("game_api", os.path.join(BASE_PATH, "game", "api.py"))
+                handler = load_module("handler", os.path.join(BASE_PATH, "discord", "handler.py"))
                 
-                t = lambda key: translations_module.get_translation(language, key)
+                # Пробуем загрузить rpc.py или init.py
+                rpc_path = os.path.join(BASE_PATH, "discord", "rpc.py")
+                if not os.path.exists(rpc_path):
+                    rpc_path = os.path.join(BASE_PATH, "discord", "init.py")
                 
-                # Импортируем остальные модули
-                api_spec = importlib.util.spec_from_file_location(
-                    "game_api", 
-                    os.path.join(base_path, "game", "api.py")
-                )
-                game_api = importlib.util.module_from_spec(api_spec)
-                sys.modules["game_api"] = game_api
-                api_spec.loader.exec_module(game_api)
-                
-                handler_spec = importlib.util.spec_from_file_location(
-                    "handler", 
-                    os.path.join(base_path, "discord", "handler.py")
-                )
-                handler_module = importlib.util.module_from_spec(handler_spec)
-                sys.modules["handler"] = handler_module
-                handler_spec.loader.exec_module(handler_module)
-                
-                init_spec = importlib.util.spec_from_file_location(
-                    "discord_init", 
-                    os.path.join(base_path, "discord", "init.py")
-                )
-                discord_init_module = importlib.util.module_from_spec(init_spec)
-                sys.modules["discord_init"] = discord_init_module
-                init_spec.loader.exec_module(discord_init_module)
-                
-                settings = settings_module
-                logs = logs_module
-                handler = handler_module
-                discord_init = discord_init_module
-                api = game_api
-                
-            except Exception as e2:
-                print(f"\n{error_text} - Critical import error: {e2}")
-                traceback.print_exc()
-                input("\nPress Enter to exit...")
-                sys.exit(1)
+                discord_init = load_module("discord_init", rpc_path)
+            
+            # Проверяем что все модули загружены
+            if not all([settings, logs, game_api, handler, discord_init]):
+                print(f"{error_text} - Failed to load required modules:")
+                if not settings: print("  - settings.py")
+                if not logs: print("  - logs.py")
+                if not game_api: print("  - game/api.py")
+                if not handler: print("  - discord/handler.py")
+                if not discord_init: print("  - discord/rpc.py or discord/init.py")
+                raise ImportError("Failed to load required modules")
+            
+        except Exception as e:
+            print(f"\n{error_text} - Error importing modules: {e}")
+            traceback.print_exc()
+            input(f"\n{t('press_enter')}")
+            sys.exit(1)
         
         # Инициализация настроек
         try:
-            app_settings = settings.init_presence_settings(base_path)
+            app_settings = settings.init_presence_settings(BASE_PATH)
         except Exception as e:
             print(f"\n{error_text} - Error initializing settings: {e}")
             traceback.print_exc()
@@ -303,18 +387,16 @@ def main():
             return
         
         # Информация о запуске
-        info_text = colored_text("INFO", "INFO")
         print(f"\n{info_text} - {t('program_started')}")
         
         # Предупреждение - 16 попыток по 10 секунд
-        yellow_warning = colored_text("WARNING", "WARNING")
-        print(f"\n{yellow_warning} - {t('program_will_try')}")
+        print(f"\n{warning_text} - {t('program_will_try')}")
         
         # Запуск основного цикла
         try:
             handler.run_update_presence_loop(app_settings, http_client)
         except KeyboardInterrupt:
-            print("\n\nProgram stopped by user")
+            print(f"\n\n{info_text} - Program stopped by user")
         except Exception as e:
             critical_error = colored_text("CRITICAL ERROR", "CRITICAL ERROR")
             print(f"\n\n{critical_error} - {e}")
@@ -324,7 +406,7 @@ def main():
     except SystemExit:
         pass
     except KeyboardInterrupt:
-        print("\n\nProgram stopped by user")
+        print(f"\n\n{info_text} - Program stopped by user")
     except Exception as e:
         critical_error = colored_text("CRITICAL ERROR", "CRITICAL ERROR")
         print(f"\n\n{critical_error} - {e}")

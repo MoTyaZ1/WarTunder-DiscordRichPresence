@@ -4,7 +4,6 @@ import logging
 import sys
 import os
 from dataclasses import dataclass
-from typing import Optional
 import requests
 
 logger = logging.getLogger(__name__)

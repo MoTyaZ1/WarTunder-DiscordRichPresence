@@ -1275,7 +1275,7 @@ VEHICLE_AIR_DICT = {
     "yp-38": {"ru": "YP-38", "en": "YP-38"},
     "z_1007_bis_serie3": {"ru": "Z.1007 bis серия 3", "en": "Z.1007 bis serie 3"},
     "z_1007_bis_serie5": {"ru": "Z.1007 bis серия 5", "en": "Z.1007 bis serie 5"},
-     "a_109_eoa2": {"ru": "A.109EOA-2", "en": "A.109EOA-2"},
+    "a_109_eoa2": {"ru": "A.109EOA-2", "en": "A.109EOA-2"},
     "a_129_a": {"ru": "A-129 International (p)", "en": "A-129 International (p)"},
     "a_129_cbt": {"ru": "A129CBT", "en": "A129CBT"},
     "a_129_d": {"ru": "AH-129D", "en": "AH-129D"},

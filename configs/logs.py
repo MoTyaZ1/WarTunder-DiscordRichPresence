@@ -125,6 +125,11 @@ def error_log_presence_struct(err: Exception, state: str, details: str,
     """Logging error when setting status"""
     logger = logging.getLogger(__name__)
     error_msg = str(err)
+    
+    # Игнорируем конкретную ошибку Discord RPC not initialized
+    if "Discord RPC not initialized" in error_msg:
+        return  # Не логируем эту ошибку
+    
     # Берем только первую часть сообщения об ошибке
     if ':' in error_msg:
         error_msg = error_msg.split(':')[0]

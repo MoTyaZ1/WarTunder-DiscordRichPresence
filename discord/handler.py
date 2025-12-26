@@ -2,25 +2,22 @@
 import time
 import logging
 import sys
+import os
 
+# Добавляем пути для импорта
+base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(base_path, "configs"))
+sys.path.insert(0, os.path.join(base_path, "game"))
+sys.path.insert(0, os.path.join(base_path, "discord"))
+
+# Импортируем модули
 from configs.settings import PresenceSettings
-from .common import BASIC_STATE_DICT, VEHICLE_STATES_DICT
-from discord.types.info import MainInfoStruct
-from game import api as game_api
+from configs.translations import get_translation
+from configs.colors import colored_text
 from configs import logs as tools_logger
-from discord.init import get_rpc_client, get_start_time
 
-# Импортируем функции для цветов и переводов
-try:
-    from configs.colors import colored_text
-    from configs.translations import get_translation
-except ImportError as e:
-    # Fallback функции на случай ошибки импорта
-    def colored_text(text: str, color_name: str) -> str:
-        return text
-    
-    def get_translation(lang: str, key: str) -> str:
-        return key
+import game.api as game_api
+from discord.common import BASIC_STATE_DICT, VEHICLE_STATES_DICT
 
 logger = logging.getLogger(__name__)
 
@@ -28,12 +25,23 @@ def set_presence(state: str, details: str, large_img: str, large_text: str,
                 small_img: str = "", small_text: str = "", lang: str = "en") -> bool:
     """Set Discord status"""
     try:
+        # Импортируем rpc модуль
+        try:
+            from discord.rpc import get_rpc_client, get_start_time
+        except ImportError:
+            # Если rpc.py не найден, пробуем init.py
+            from discord.rpc import get_rpc_client, get_start_time
+        
         rpc = get_rpc_client()
         start_time = get_start_time()
         
+        # Если RPC клиент не инициализирован, пропускаем установку статуса
+        if rpc is None:
+            return False
+        
         # Make sure all required fields are filled
         if not state:
-            state = VEHICLE_STATES_DICT["in_game"]["ru"]
+            state = VEHICLE_STATES_DICT["in_game"][lang]
         if not details:
             details = ""  # Пустая строка вместо "War Thunder"
         if not large_img:
@@ -41,7 +49,7 @@ def set_presence(state: str, details: str, large_img: str, large_text: str,
         if not large_text:
             large_text = "War Thunder"
         
-        # Используем новый метод set_activity
+        # Используем метод set_activity
         rpc.set_activity(
             state=state,
             details=details if details else None,
@@ -65,7 +73,7 @@ def set_presence(state: str, details: str, large_img: str, large_text: str,
         logger.error(f"Error setting status: {e}")
         return False
 
-def set_ground_state(settings: PresenceSettings, main_info: MainInfoStruct) -> bool:
+def set_ground_state(settings: PresenceSettings, main_info) -> bool:
     """Set status for ground vehicles"""
     try:
         from discord.types.ground import IndicatorsGroundStruct
@@ -94,7 +102,7 @@ def set_ground_state(settings: PresenceSettings, main_info: MainInfoStruct) -> b
         logger.error(f"Error setting ground vehicle status: {e}", exc_info=True)
         return False
 
-def set_air_state(settings: PresenceSettings, http_client, main_info: MainInfoStruct) -> bool:
+def set_air_state(settings: PresenceSettings, http_client, main_info) -> bool:
     """Set status for air vehicles"""
     try:
         success, state_body = game_api.air_state_request(http_client, settings.lang)
@@ -189,7 +197,10 @@ def run_update_presence_loop(settings: PresenceSettings, http_client):
                 
                 # Закрываем Discord соединение перед выходом
                 try:
-                    from discord.init import close_rpc
+                    try:
+                        from discord.rpc import close_rpc
+                    except ImportError:
+                        from discord.rpc import close_rpc
                     close_rpc()
                 except:
                     pass
@@ -261,7 +272,10 @@ def run_update_presence_loop(settings: PresenceSettings, http_client):
         except SystemExit:
             # Даем время на корректное завершение
             try:
-                from discord.init import close_rpc
+                try:
+                    from discord.rpc import close_rpc
+                except ImportError:
+                    from discord.rpc import close_rpc
                 close_rpc()
             except:
                 pass
@@ -271,7 +285,10 @@ def run_update_presence_loop(settings: PresenceSettings, http_client):
         except KeyboardInterrupt:
             print("\n\nProgram stopped by user")
             try:
-                from discord.init import close_rpc
+                try:
+                    from discord.rpc import close_rpc
+                except ImportError:
+                    from discord.rpc import close_rpc
                 close_rpc()
             except:
                 pass

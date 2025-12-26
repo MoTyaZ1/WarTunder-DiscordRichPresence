@@ -2,7 +2,7 @@
     "refresh_time": 7, 
     "large_img": "main_logo",
     "alt_presence": false,
-    "lang": "en",
+    "lang": "ru",
     "vehicle_details": true,
     "left_tank_state": "speed",
     "right_tank_state": "crew",

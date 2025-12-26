@@ -118,7 +118,9 @@ def get_rpc_client():
     global _rpc_client
     
     if _rpc_client is None:
-        raise RuntimeError("Discord RPC not initialized")
+        # Вместо выбрасывания исключения, просто возвращаем None
+        # или заглушку, чтобы избежать ошибки
+        return None
     
     return _rpc_client
 
