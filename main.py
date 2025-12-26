@@ -196,13 +196,40 @@ def check_for_updates(lang: str = "en"):
     try:
         import requests
         
-        # Получаем функции перевода
-        t = get_translation_func(lang)
+        # Получаем функцию перевода из загруженного модуля или создаем заглушку
+        t_func = None
+        
+        # Пробуем получить функцию перевода из уже загруженного модуля
+        if _translations_module and hasattr(_translations_module, 'get_translation'):
+            t_func = lambda key: _translations_module.get_translation(lang, key)
+        else:
+            # Или пробуем загрузить модуль напрямую
+            try:
+                translations_path = os.path.join(BASE_PATH, "configs", "translations.py")
+                if os.path.exists(translations_path):
+                    spec = importlib.util.spec_from_file_location("translations", translations_path)
+                    if spec:
+                        translations = importlib.util.module_from_spec(spec)
+                        sys.modules["translations"] = translations
+                        spec.loader.exec_module(translations)
+                        if hasattr(translations, 'get_translation'):
+                            t_func = lambda key: translations.get_translation(lang, key)
+            except:
+                pass
+        
+        # Если не удалось получить функцию перевода, создаем заглушку
+        if not t_func:
+            t_func = lambda key: key
+        
+        t = t_func
         
         # Получаем функцию для цветов
-        colored_text = get_colored_text_func()
-        update_text = colored_text("UPDATE", "UPDATE") if colored_text("UPDATE", "UPDATE") != "UPDATE" else "UPDATE"
-        check_text = colored_text("CHECK", "CHECK") if colored_text("CHECK", "CHECK") != "CHECK" else "CHECK"
+        colored_text_func = get_colored_text_func()
+        
+        # Создаем цветные префиксы
+        update_text = colored_text_func("UPDATE", "UPDATE") if colored_text_func("UPDATE", "UPDATE") != "UPDATE" else "UPDATE"
+        check_text = colored_text_func("CHECK", "CHECK") if colored_text_func("CHECK", "CHECK") != "CHECK" else "CHECK"
+        success_text = colored_text_func("SUCCESS", "SUCCESS") if colored_text_func("SUCCESS", "SUCCESS") != "SUCCESS" else "SUCCESS"
         
         print(f"{check_text} - {t('update_checking')}")
         
@@ -236,19 +263,24 @@ def check_for_updates(lang: str = "en"):
                 print(f"{update_text} - {t('update_download')}: {html_url}")
             else:
                 # Выводим текущую версию
-                print(f"{update_text} - {t('update_current_version')}: {current_version}")
+                print(f"{success_text} - {t('update_current_version')}: {current_version}")
             
     except requests.exceptions.ConnectionError:
         # Если нет интернета
-        print(f"{update_text} - {t('update_no_internet')}")
+        update_text = get_colored_text_func()("UPDATE", "UPDATE") if get_colored_text_func()("UPDATE", "UPDATE") != "UPDATE" else "UPDATE"
+        t_func = lambda key: key if not t else t
+        print(f"{update_text} - {t_func('update_no_internet')}")
         return False
     except requests.exceptions.RequestException as e:
         # Если GitHub недоступен
-        print(f"{update_text} - {t('update_check_failed')}")
+        update_text = get_colored_text_func()("UPDATE", "UPDATE") if get_colored_text_func()("UPDATE", "UPDATE") != "UPDATE" else "UPDATE"
+        t_func = lambda key: key if not t else t
+        print(f"{update_text} - {t_func('update_check_failed')}")
         return False
     except Exception as e:
         # Любая другая ошибка
-        print(f"{update_text} - {t('update_check_failed')}")
+        update_text = get_colored_text_func()("UPDATE", "UPDATE") if get_colored_text_func()("UPDATE", "UPDATE") != "UPDATE" else "UPDATE"
+        print(f"{update_text} - Не удалось проверить обновления")
         return False
 
 def main():
@@ -263,10 +295,10 @@ def main():
         colored_text = get_colored_text_func()
         
         # Создаем цветные префиксы
-        success_text = colored_text("SUCCESS", "SUCCESS")
         error_text = colored_text("ERROR", "ERROR")
         info_text = colored_text("INFO", "INFO")
         warning_text = colored_text("WARNING", "WARNING")
+        success_text = colored_text("SUCCESS", "SUCCESS")
         
         # Проверка обновлений в самом начале
         check_for_updates(language)

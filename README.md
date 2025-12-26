@@ -24,8 +24,8 @@
 <img width="448" height="159" alt="Air" src="https://github.com/user-attachments/assets/e00e69f6-1cef-479f-8065-2824ecdda780" />
 
 ## Как запустить
-1. Скачайте [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0)
-2. Скачайте [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0)
+1. Скачайте [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.3.1)
+2. Скачайте [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.3.1)
 3. Запустите WarThunderDiscordRPC.exe
 4. (Не обязательно) Откройте любым редактором settings.json для настройки консольной программы
 ## Как сделать автозапуск для Steam версии
@@ -41,7 +41,7 @@ WarThunderDiscordRPC.exe
 pause
 ```
 6. Переименуйте rpc.txt в rpc.bat
-7. Скачайте и поместите [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) и [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) в корневую папку игры.
+7. Скачайте и поместите [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.3.1) и [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.3.1) в корневую папку игры.
 
 ## Настройки по умолчанию
 ```

@@ -1,8 +1,4 @@
 # configs/colors.py
-"""
-Цветовая схема для консольного вывода
-"""
-
 # ANSI color codes
 COLORS = {
     # Уровни логирования
