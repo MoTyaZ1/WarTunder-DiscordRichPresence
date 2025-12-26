@@ -245,7 +245,7 @@ def check_for_updates(lang: str = "en"):
             html_url = release_data.get("html_url", "")
             
             # Получаем текущую версию
-            current_version = "v1.3.0"  # Версия по умолчанию
+            current_version = "v1.3.1"  # Версия по умолчанию
             
             # Пробуем прочитать версию из файла version.txt если он есть
             version_file = os.path.join(BASE_PATH, "version.txt")
