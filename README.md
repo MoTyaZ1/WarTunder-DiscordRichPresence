@@ -3,7 +3,7 @@
 </p>
 
 # WarTunderDiscordRPC
-Это консольная программа для отображения статуса в Discord для игры War Tunder на основе получаемых данных от War Tunder, доступных по адресу 8111
+**Это консольная программа для отображения подробного статуса в Discord для игры War Tunder на основе получаемых данных от War Tunder, доступных по адресу 8111.**
 
 [![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 ## Фото
@@ -41,7 +41,7 @@ WarThunderDiscordRPC.exe
 pause
 ```
 6. Переименуйте rpc.txt в rpc.bat
-7. Скачайте и поместите [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) и [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) в корневую папку игры
+7. Скачайте и поместите [WarThunderDiscordRPC.exe](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) и [settings.json](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/releases/tag/v1.2.0) в корневую папку игры.
 
 ## Настройки по умолчанию
 ```
@@ -58,28 +58,28 @@ pause
 }
 ```
 ## Объяснение настроек
-refresh_time - Интервал обновления статуса в секундах Рекомендовано: `7`, Минимально: `5`
+refresh_time - Интервал обновления статуса в секундах Рекомендовано: `7`, Минимально: `5`.
 
-large_img - `"main_logo"` (пока что только есть одно фото, у меня нету идей какую фотографию ещё добавить)
+large_img - `"main_logo"` (пока что только есть одно фото, у меня нету идей какую фотографию ещё добавить).
 
-alt_presence - `true`: Параметры техники показываются в тексте картинки, `false`: Параметры техники показываются в основном статусе
+alt_presence - `true`: Параметры техники показываются в тексте картинки, `false`: Параметры техники показываются в основном статусе.
 
-lang - Язык интерфейса программы и отображения дополнительной информации discord `"ru"`: русский, `"en"`: англиский
+lang - Язык интерфейса программы и отображения дополнительной информации discord `"ru"`: русский, `"en"`: англиский.
 
-vehicle_details - `"speed"`: Скорость (км/ч), `"false"`: ничего не выводит
+vehicle_details - `"speed"`: Скорость (км/ч), `"false"`: ничего не выводит.
 
-right_tank_state - `"rpm"`: Обороты двигателя, `"crew"`: Экипаж (текущий/максимальный), `"false"`: ничего не выводит
+right_tank_state - `"rpm"`: Обороты двигателя, `"crew"`: Экипаж (текущий/максимальный), `"false"`: ничего не выводит.
 
-left_air_state - `"spd"`: Скорость TAS (км/ч), `"ias"`: Скорость IAS (км/ч), `"false"`: ничего не выводит
+left_air_state - `"spd"`: Скорость TAS (км/ч), `"ias"`: Скорость IAS (км/ч), `"false"`: ничего не выводит.
 
-right_air_state - `"alt"`: Высота (м), `"fuel"`: Топливо (кг), `"false"`: ничего не выводит
+right_air_state - `"alt"`: Высота (м), `"fuel"`: Топливо (кг), `"false"`: ничего не выводит.
 ## Список техники
-Программа была сделана под список техники из обновления [War Tunder 2.53.0.26](https://warthunder.ru/ru/game/changelog/current/3098)
+Программа была сделана под список техники из обновления [War Tunder 2.53.0.26](https://warthunder.ru/ru/game/changelog/current/3098).
 
-Информация не будет отображатся с (Большим флотом, Малым флотом, Ядерным самолётом, Техникой из ивента) вместо этого будет статус в бою
+Информация не будет отображатся с (Большим флотом, Малым флотом, Ядерным самолётом, Техникой из ивента) вместо этого будет статус в бою.
 ## Ответы
-Портировать консольную программу на Linux и темболее для macOS не буду (как минимум долгое время)
+Портировать консольную программу на Linux и темболее для macOS не буду (как минимум долгое время).
 
-Протестированно было на Windows 11 Pro - 25H2 26220.7523 и Windows 10 Pro - 22H2 19045.6456
+Протестированно было на Windows 11 Pro - 25H2 26220.7523 и Windows 10 Pro - 22H2 19045.6456.
 ## Лицензирование
-Данный репозиторий распространяется под лицензией MIT. [Подробнее](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/blob/main/LICENSE.md)
+Данный репозиторий распространяется под лицензией MIT. [Подробнее](https://github.com/MoTyaZ1/WarTunder-DiscordRichPresence/blob/main/LICENSE.md).
